@@ -1,8 +1,112 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
     Page.Title = string.Format("Razor - {0}", "Exercise 01");
+
+    var myname = Request.Form["dataentry"];
+    var thebutton = Request.Form["theButton"];
+    string choices = "";
 }
 
 @section banner {
     <h1>@Page.Title</h1>
 }
+
+@if (IsPost)
+{
+    <!--<p>IsPost = true</p>-->
+
+    //this true path is done IF this page is returning
+    //from the previous sending
+
+    //you can delay retreiving your data input until you actually have
+    //a postback
+
+    choices = Request.Form["FoodGroup"];
+    if (thebutton.Equals("submit"))
+    {
+        //the Press Me Button was pressed
+        if (string.IsNullOrEmpty(myname) && choices.IsEmpty())
+        {
+            <p class="offset-1" style="color:firebrick">You dont have a name and an order?</p>
+        }
+        else if(choices.IsEmpty())
+        {
+            <p class="offset-1" style="color: firebrick;">@myname, you dont have an order?</p>
+        }
+        else if (string.IsNullOrEmpty(myname))
+        {
+            <p class="offset-1">
+                Unnamed Customer, your order is:
+                <ul class="offset-1">
+                    @foreach (var platform in choices.Split(','))
+                    {
+                        <li>@platform</li>
+    }
+                </ul>
+            </p>
+        }
+        else
+        {
+
+            var choicearray = choices.Split(',');
+            <p class="offset-1">
+                @myname, your order is:
+                <ul class="offset-1">
+                    @foreach (var platform in choices.Split(','))
+                    {
+                        <li>@platform</li>
+    }
+                </ul>
+            </p>
+        }
+    }
+    else
+    {
+        //the Reset Button was pressed
+        myname = "";
+        <p class="offset-1">You pressed the Reset Button</p>
+        choices = "";
+    }
+}
+else
+{
+    //use to initialize items on you form BEFORE it is sent
+    //to the user for the First time.
+    <p class="offset-1">Please type your name and select your order.</p>
+    <!--<p>IsPost = false</p>-->
+}
+
+
+<form id="theform" method="post">
+    <div class="row col-mid-3 offset-1">
+        <div>
+            Customer Name:<br />
+            <input type="text" id="dataentry" name="dataentry" value="@myname" />
+            <br /><br />
+        </div>
+        <div class="offset-1">
+            <label id="lblGameGroup">Select your favourite food:</label><br />
+            <input type="checkbox" id="FoodGroup" name="FoodGroup" value="Burger"
+                   @*@(Array.IndexOf(Choices.Split(','), "Burger") >= 0 ? "checked" : "")*@ /> Burger<br />
+            <input type="checkbox" id="FoodGroup" name="FoodGroup" value="Pizza"
+                   @*@(Array.IndexOf(Choices.Split(','), "Pizza") >= 0 ? "checked" : "")*@ /> Pizza<br />
+            <input type="checkbox" id="FoodGroup" name="FoodGroup" value="Hotdog"
+                   @*@(Array.IndexOf(Choices.Split(','), "Hotdog") >= 0 ? "checked" : "")*@ /> Hotdog<br />
+            <input type="checkbox" id="FoodGroup" name="FoodGroup" value="Spaghetti"
+                   @*@(Array.IndexOf(Choices.Split(','), "Spaghetti") >= 0 ? "checked" : "")*@ /> Spaghetti<br />
+
+        </div>
+
+    </div>
+    </div>
+    <div class="row col-mid-9 offset-1">
+        <button type="submit" id="theButton" name="theButton"
+                value="submit" class="btn btn-primary">
+            Submit
+        </button>
+        <button type="submit" id="theButton" name="theButton"
+                value="reset" class="btn btn-light">
+            Reset
+        </button>
+    </div>
+</form>
